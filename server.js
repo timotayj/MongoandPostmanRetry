@@ -4,116 +4,50 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var bodyparser = require('body-parser');
-var Beer = require('./models/beer');
+var beerController = require('./controllers/beer');
+var userController = require('./controllers/user');
+var passport = require('passport');
+var authController = require('./controllers/auth');
+
+
+
+mongoose.connect('mongodb://localhost:27017/beerlocker');
 
 var app = express();
+
+
 
 app.use(bodyparser.urlencoded({
     extended : true
 
 }));
 
+app.use(passport.initialize());
 
 
-
-
-var port = process.env.PORT || 3000;
 
 var router = express.Router();
 
-mongoose.connect('mongodb://localhost:27017/beerlocker');
+router.route('/beer')
+    .post(authController.isAuthenticated, beerController.postBeers)
+    .get(authController.isAuthenticated, beerController.getBeers);
+
+router.route('/beer/:beer_id')
+    .get(authController.isAuthenticated, beerController.getBeer)
+    .put(authController.isAuthenticated, beerController.putBeer)
+    .delete(authController.isAuthenticated, beerController.deleteBeer);
 
 
-
-
-
-
-
-router.get('/', function (req, res) {
-    res.json({message: 'running low!'});
-
-});
-
-var beerRoute = router.route('/beer');
-
-beerRoute.post(function (req,res) {
-
-    var beer = new Beer();
-    beer.name = req.body.name;
-    beer.type = req.body.type;
-    beer.quantity = req.body.quantity;
-
-    beer.save(function(err){
-
-        if(err)
-            res.send(err);
-        res.json({message: 'beer added', data:beer});
-    });
-
-
-
-
-});
-
-
-beerRoute.get(function (req, res) {
-    Beer.find(function (err,beer) {
-        if(err)
-            res.send(err);
-        res.json(beer);
-
-    });
-});
-
-
-var beerRoute = router.route('/beer/:beer_id');
-beerRoute.get(function (req,res) {
-    Beer.findById(req.params.beer_id,function (err,beer) {
-        if (err)
-            res.send(err);
-        res.json(beer);
-    });
-});
-
-beerRoute.put(function (req,res) {
-
-    Beer.findById(req.params.beer_id,function (err, beer) {
-        if(err)
-            res.send(err);
-        beer.quantity = req.body.quantity;
-
-
-        beer.save(function (err) {
-            if(err)
-                res.send(err);
-            res.json(beer);
-
-        });
-
-    });
-
-});
-
-
-beerRoute.delete(function(req,res){
-    Beer.findByIdAndRemove(req.params.beer_id,function (err) {
-        if (err)
-            res.send(err);
-
-        res.json({message: 'beer removed'});
-
-    });
-
-
-});
-
+router.route('/users')
+    .post(userController.postUsers)
+    .get(authController.isAuthenticated, userController.getUsers)
 
 
 
 app.use('/api', router);
 
-app.listen(port);
-console.log('Insert beer or port' + port);
+app.listen(3000);
+
 
 
 
