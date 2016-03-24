@@ -43,6 +43,7 @@ app.use('/', routes);
 
 router.route('/')
     .get(beerController.getBeers)
+    .put(beerController.putBeer)
     .post(beerController.postBeers);
 
 

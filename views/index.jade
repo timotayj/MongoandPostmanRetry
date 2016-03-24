@@ -12,7 +12,7 @@ block content
         p <strong>ID: #{i._id}
 
 
-
+        input(data-quant= '#{i.quantity}', data-id= '#{i._id}', type = 'button', value ="Drank one!", class='minusone')
         input(data-id= '#{i._id}', type = 'button', value ="delete beer", class='delete')
 
     h1 Add a Beer
@@ -54,17 +54,7 @@ block content
                    name: document.getElementById('nameoname').value,
                     type: document.getElementById('typeotype').value,
                     quantity: document.getElementById('quantoquant').value,
-
-
-
-
-
                 }
-
-
-
-
-
 
                 $.ajax({
                     type: 'POST',
@@ -79,6 +69,29 @@ block content
 
                 });
             });
+
+
+            $(".minusone").click(function () {
+
+
+                var minusonebeer = {
+
+                    quantity: $(this).attr('data-quant') -1
+                }
+
+                $.ajax({
+                    type: 'PUT',
+                    data: minusonebeer,
+                    url: '/api/beer/' + $(this).attr('data-id'),
+                    dataType: 'JSON'
+
+
+                }).done(function (result) {
+                    location.reload()
+
+                });
+            });
+
 
 
 
