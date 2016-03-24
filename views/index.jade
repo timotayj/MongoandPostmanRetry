@@ -1,0 +1,46 @@
+extends layout
+
+
+block content
+    h1 List of Beers in Fridge
+
+    -each i in docs
+        p ----------------------
+        p <strong>Name: #{i.name}
+        p <strong>Type: #{i.type}
+        p <strong>Amount: #{i.quantity}
+        p <strong>ID: #{i._id}
+
+
+
+        input(data-id= '#{i._id}' , type = 'button', value ="delete beer", class='delete')
+
+
+
+
+    script(type='text/javascript').
+        $(document).ready(function() {
+
+
+            $(".delete").click(function() {
+
+
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/api/beer/' + $(this).attr('data-id')
+
+
+                }).done(function(result) {
+                    location.reload()
+
+                });
+            });
+        });
+
+    button(onclick="location.href = 'api/beer';") Login
+
+
+
+
+
+

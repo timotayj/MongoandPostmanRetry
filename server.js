@@ -8,6 +8,7 @@ var beerController = require('./controllers/beer');
 var userController = require('./controllers/user');
 var passport = require('passport');
 var authController = require('./controllers/auth');
+var path = require('path');
 
 
 
@@ -22,11 +23,28 @@ app.use(bodyparser.urlencoded({
 
 }));
 
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+
+
+
+
 app.use(passport.initialize());
 
 
 
 var router = express.Router();
+
+
+var routes = require('./routes/index');
+app.use('/', routes);
+
+
+router.route('/')
+    .get(beerController.getBeers);
+
+
 
 router.route('/beer')
     .post(authController.isAuthenticated, beerController.postBeers)
