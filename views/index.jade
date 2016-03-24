@@ -13,9 +13,14 @@ block content
 
 
 
-        input(data-id= '#{i._id}' , type = 'button', value ="delete beer", class='delete')
+        input(data-id= '#{i._id}', type = 'button', value ="delete beer", class='delete')
 
+    h1 Add a Beer
 
+    input(name ='beerName', placeholder="Name", id ='nameoname')
+    input(name ='beerType', placeholder="Type", id ='typeotype')
+    input(name ='beerQuant', placeholder="Quantity", id ='quantoquant')
+    input(type = 'button' , value ='Add Beer', class = "addBeer")
 
 
     script(type='text/javascript').
@@ -35,6 +40,50 @@ block content
 
                 });
             });
+
+
+            $(".addBeer").click(function () {
+
+
+
+
+
+
+                var newBeeryo = {
+
+                   name: document.getElementById('nameoname').value,
+                    type: document.getElementById('typeotype').value,
+                    quantity: document.getElementById('quantoquant').value,
+
+
+
+
+
+                }
+
+
+
+
+
+
+                $.ajax({
+                    type: 'POST',
+                    data: newBeeryo,
+                    url: '/api/beer/',
+                    dataType: 'JSON'
+
+
+
+            }).done(function (result) {
+                    location.reload()
+
+                });
+            });
+
+
+
+
+
         });
 
     button(onclick="location.href = 'api/beer';") Login

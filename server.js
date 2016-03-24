@@ -42,7 +42,8 @@ app.use('/', routes);
 
 
 router.route('/')
-    .get(beerController.getBeers);
+    .get(beerController.getBeers)
+    .post(beerController.postBeers);
 
 
 
